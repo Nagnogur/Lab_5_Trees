@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Lab_5
 {
-    class VariableNode
+    class VariableNode : Node
     {
-        string type = "Variable";
+        public string type = "Variable";
         string value;
         public string Value
         {

@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace Lab_5
 {
-    class EquationNode
+    class EquationNode : Node
     {
+        public string type = "Equation";
         VariableNode variable;
         ValueNode value;
 

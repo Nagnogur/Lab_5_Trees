@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Lab_5
 {
-    class ValueNode
+    class ValueNode : Node
     {
-        string type = "Value";
+        public string type = "Value";
         double value;
         public double Value
         {
