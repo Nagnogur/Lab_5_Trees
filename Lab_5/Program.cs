@@ -16,13 +16,15 @@ namespace Lab_5
             string[] inp = File.ReadAllLines(@"input.txt");
 
             List<Tuple<char, int, string>> operators = new List<Tuple<char, int, string>>();
-            char[] opers = { '+', '-', '*', '/', '^', '=' };
+            char[] opers = { '+', '-', '*', '/', '^', '=' , '<' , '>'};
             operators.Add(Tuple.Create('=', 1, "left"));
             operators.Add(Tuple.Create('+', 2, "left"));
             operators.Add(Tuple.Create('-', 2, "left"));
             operators.Add(Tuple.Create('*', 3, "left"));
             operators.Add(Tuple.Create('/', 3, "left"));
             operators.Add(Tuple.Create('^', 4, "right"));
+            operators.Add(Tuple.Create('<', 1, "left"));
+            operators.Add(Tuple.Create('>', 1, "left"));
 
             Dictionary<string, double> values = new Dictionary<string, double>();
 
@@ -51,6 +53,7 @@ namespace Lab_5
                             {
                                 fullStr.Add("{");
                                 fullStr.Add(s1);
+                                
                                 s1 = "";
                                 flag = true;
                                 break;
@@ -70,35 +73,43 @@ namespace Lab_5
             }
 
 
-           /* string[] sss = { "=", "a", "c" }; //{ "-", "c", "+", "b", "a" };
-            // OperationNode op1 = new OperationNode("+", new OperationNode("-", new OperationNode("a", null, null), new OperationNode("6.2", null, null)), new OperationNode("c", null, null));
-            OperationNode op1 = new OperationNode("").BuildSubTree(sss);
-            op1.WriteSubTree(op1);*/
+            /* string[] sss = { "=", "a", "c" }; //{ "-", "c", "+", "b", "a" };
+             // OperationNode op1 = new OperationNode("+", new OperationNode("-", new OperationNode("a", null, null), new OperationNode("6.2", null, null)), new OperationNode("c", null, null));
+             OperationNode op1 = new OperationNode("").BuildSubTree(sss);
+             op1.WriteSubTree(op1);*/
 
 
-/*
-            ExpressionNode expr = new ExpressionNode();
-            VariableNode abc = new VariableNode("abc");
-            ValueNode vvv = new ValueNode(6);
-            EquationNode f = new EquationNode(abc, vvv);
-            expr.AddNode(f);
-            Console.WriteLine(expr.child[0].Type);
-            if (expr.child[0].Type == "Equation")
-            {
-                EquationNode eq = (EquationNode)expr.child[0];
-                Console.WriteLine(eq.variable.Value + " = " + eq.value.Value);
-            }*/
+            /*
+                        ExpressionNode expr = new ExpressionNode();
+                        VariableNode abc = new VariableNode("abc");
+                        ValueNode vvv = new ValueNode(6);
+                        EquationNode f = new EquationNode(abc, vvv);
+                        expr.AddNode(f);
+                        Console.WriteLine(expr.child[0].Type);
+                        if (expr.child[0].Type == "Equation")
+                        {
+                            EquationNode eq = (EquationNode)expr.child[0];
+                            Console.WriteLine(eq.variable.Value + " = " + eq.value.Value);
+                        }*/
 
+            ExpressionNode expression = new ExpressionNode();
 
             bool ifState = false;
+            bool statement = false;
 
             int len = fullStr.Count;
             for (int i = 0; i < fullStr.Count; i++)
             {
+                bool equation = false;
+                if (ifState)
+                {
+                    ifState = false;
+                    statement = true;
+                }
                 if (fullStr[i][0] == '}')
                 {
                     s1 = "";
-                    ifState = false;
+                    statement = false;
                 }
                 else if (fullStr[i][0] == '{')
                 {
@@ -118,6 +129,10 @@ namespace Lab_5
 
                 for (int j = 0; j < s1.Length; j++)
                 {
+                    if (s1[j] == '=')
+                    {
+                        equation = true;
+                    }
                     //Console.WriteLine(s1[j]);
                     if (s1[j] == '(')  //   (
                     {
@@ -179,13 +194,67 @@ namespace Lab_5
                 {
                     output.Push(Convert.ToString(operatorStack.Pop()));
                 }
+                List<string> state = new List<string>();
                 while (output.Count > 0)
                 {
+                    state.Add(output.Peek());
                     Console.Write(output.Pop() + " ");
                 }
                 Console.WriteLine();
+                if (ifState)
+                {
+
+                }
+                else if (statement)
+                {
+
+                }
+                else if (equation)
+                {
+                    EquationNode eq = new EquationNode(new VariableNode(state[2]), new ValueNode(Convert.ToDouble(state[1])));
+                    expression.AddNode(eq);
+                }
+                else
+                {
+                    OperationNode op = new OperationNode("").BuildSubTree(state.ToArray());
+                    expression.AddNode(op);
+                }
 
             }
+
+            Dictionary<string, double> table = new Dictionary<string, double>();
+
+            for (int i = 0; i < expression.child.Count; i++)
+            {
+                string type = expression.child[i].Type;
+                switch(type)
+                {
+                    case "Equation":
+                        {
+                            EquationNode t = (EquationNode)expression.child[i];
+                            if (table.ContainsKey(t.variable.Value))
+                            {
+                                table[t.variable.Value] = t.value.Value;
+                            }
+                            else
+                            {
+                                table.Add(t.variable.Value, t.value.Value);
+                            }
+                            break;
+                        }
+                    case "Operation":
+                        {
+                            OperationNode t = (OperationNode)expression.child[i];
+                            t.WriteSubTree(t);
+                            Console.WriteLine();
+                            break;
+                        }
+                }
+            }
+
+            foreach (var entry in table)
+                Console.WriteLine("[{0} {1}]", entry.Key, entry.Value);
+
             /*for (int i = 0; i < fullStr[j].Length; i++)
             {
                 if (fullStr[j][i] == '(')  //   (
