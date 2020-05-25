@@ -27,17 +27,17 @@ namespace Lab_5
 
             List<string> fullStr = new List<string>();
             string s1 = "";
-            
+
             for (int i = 0; i < inp.Length; i++)
             {
-                
+
                 inp[i] = inp[i].Replace(" ", "");
                 inp[i] = inp[i].Replace("\t", "");
                 int j = 0;
                 while (j < inp[i].Length)
                 {
                     bool flag = false;
-                    switch(inp[i][j])
+                    switch (inp[i][j])
                     {
                         case ';':
                             {
@@ -65,7 +65,27 @@ namespace Lab_5
                     if (!flag)
                         s1 += inp[i][j];
                     j++;
-                } 
+                }
+            }
+
+
+            string[] sss = { "a", "b", "+", "c", "-" };
+            // OperationNode op1 = new OperationNode("+", new OperationNode("-", new OperationNode("a", null, null), new OperationNode("6.2", null, null)), new OperationNode("c", null, null));
+            OperationNode op1 = new OperationNode("").BuildSubTree(sss);
+            op1.WriteSubTree(op1);
+
+
+
+            ExpressionNode expr = new ExpressionNode();
+            VariableNode abc = new VariableNode("abc");
+            ValueNode vvv = new ValueNode(6);
+            EquationNode f = new EquationNode(abc, vvv);
+            expr.AddNode(f);
+            Console.WriteLine(expr.child[0].Type);
+            if (expr.child[0].Type == "Equation")
+            {
+                EquationNode eq = (EquationNode)expr.child[0];
+                Console.WriteLine(eq.variable.Value + " = " + eq.value.Value);
             }
 
             Stack<string> output = new Stack<string>();
@@ -92,7 +112,7 @@ namespace Lab_5
                 }
 
 
-                Console.WriteLine(fullStr[i]);
+                //Console.WriteLine(fullStr[i]);
             }
 
             /*for (int i = 0; i < fullStr[j].Length; i++)

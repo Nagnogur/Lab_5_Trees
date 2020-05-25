@@ -8,12 +8,12 @@ namespace Lab_5
 {
     class EquationNode : Node
     {
-        public string type = "Equation";
-        VariableNode variable;
-        ValueNode value;
+        public VariableNode variable;
+        public ValueNode value;
 
         public EquationNode(VariableNode var, ValueNode val)
         {
+            Type = "Equation";
             variable = var;
             value = val;
         }

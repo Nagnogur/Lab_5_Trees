@@ -8,7 +8,6 @@ namespace Lab_5
 {
     class VariableNode : Node
     {
-        public string type = "Variable";
         string value;
         public string Value
         {
@@ -18,6 +17,7 @@ namespace Lab_5
 
         public VariableNode(string val)
         {
+            Type = "Variable";
             value = val;
         }
     }

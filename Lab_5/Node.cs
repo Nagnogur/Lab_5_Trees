@@ -8,5 +8,12 @@ namespace Lab_5
 {
     class Node
     {
+        string type;
+
+        public string Type
+        {
+            get { return type; }
+            set { type = value; }
+        }
     }
 }

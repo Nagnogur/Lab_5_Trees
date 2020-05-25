@@ -8,7 +8,6 @@ namespace Lab_5
 {
     class ValueNode : Node
     {
-        public string type = "Value";
         double value;
         public double Value
         {
@@ -18,6 +17,7 @@ namespace Lab_5
 
         public ValueNode(double val)
         {
+            Type = "Value";
             value = val;
         }
     }
