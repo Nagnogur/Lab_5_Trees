@@ -16,7 +16,8 @@ namespace Lab_5
             string[] inp = File.ReadAllLines(@"input.txt");
 
             List<Tuple<char, int, string>> operators = new List<Tuple<char, int, string>>();
-            char[] opers = { '+', '-', '*', '/', '^' };
+            char[] opers = { '+', '-', '*', '/', '^', '=' };
+            operators.Add(Tuple.Create('=', 1, "left"));
             operators.Add(Tuple.Create('+', 2, "left"));
             operators.Add(Tuple.Create('-', 2, "left"));
             operators.Add(Tuple.Create('*', 3, "left"));
@@ -69,13 +70,13 @@ namespace Lab_5
             }
 
 
-            string[] sss = { "a", "b", "+", "c", "-" };
+           /* string[] sss = { "=", "a", "c" }; //{ "-", "c", "+", "b", "a" };
             // OperationNode op1 = new OperationNode("+", new OperationNode("-", new OperationNode("a", null, null), new OperationNode("6.2", null, null)), new OperationNode("c", null, null));
             OperationNode op1 = new OperationNode("").BuildSubTree(sss);
-            op1.WriteSubTree(op1);
+            op1.WriteSubTree(op1);*/
 
 
-
+/*
             ExpressionNode expr = new ExpressionNode();
             VariableNode abc = new VariableNode("abc");
             ValueNode vvv = new ValueNode(6);
@@ -86,18 +87,17 @@ namespace Lab_5
             {
                 EquationNode eq = (EquationNode)expr.child[0];
                 Console.WriteLine(eq.variable.Value + " = " + eq.value.Value);
-            }
+            }*/
 
-            Stack<string> output = new Stack<string>();
-            Stack<char> operatorStack = new Stack<char>();
-            bool negative = true;
+
             bool ifState = false;
 
             int len = fullStr.Count;
             for (int i = 0; i < fullStr.Count; i++)
-            {   
+            {
                 if (fullStr[i][0] == '}')
                 {
+                    s1 = "";
                     ifState = false;
                 }
                 else if (fullStr[i][0] == '{')
@@ -110,11 +110,82 @@ namespace Lab_5
                 {
                     s1 = fullStr[i];
                 }
+                ///////////////////////////////////
+                Stack<string> output = new Stack<string>();
+                Stack<char> operatorStack = new Stack<char>();
+                bool negative = true;
+                string s = "";
 
+                for (int j = 0; j < s1.Length; j++)
+                {
+                    //Console.WriteLine(s1[j]);
+                    if (s1[j] == '(')  //   (
+                    {
+                        operatorStack.Push(s1[j]);
+                        negative = true;
+                    }
 
-                //Console.WriteLine(fullStr[i]);
+                    else if (s1[j] == ')')   //      )
+                    {
+                        while (operatorStack.Peek() != '(')
+                        {
+                            output.Push(Convert.ToString(operatorStack.Peek()));
+                            operatorStack.Pop();
+                        }
+                        operatorStack.Pop();
+                        negative = false;
+                    }
+
+                    else if (!negative && opers.Contains(s1[j]))      //      +,-,*,/,^
+                    {
+                        int index = Array.IndexOf(opers, s1[j]);
+                        if (operatorStack.Count == 0 || operatorStack.Peek() == '(' || (operators[Array.IndexOf(opers, operatorStack.Peek())].Item2 < operators[index].Item2))
+                        {
+                            operatorStack.Push(s1[j]);
+                        }
+                        else
+                        {
+                            while (operatorStack.Count > 0 && operatorStack.Peek() != '(' && (operators[Array.IndexOf(opers, operatorStack.Peek())].Item2 > operators[index].Item2 || (operators[Array.IndexOf(opers, operatorStack.Peek())].Item2 == operators[index].Item2 && operators[index].Item3 == "left")))
+                            {
+
+                                output.Push(Convert.ToString(operatorStack.Peek()));
+                                operatorStack.Pop();
+                            }
+                            operatorStack.Push(s1[j]);
+                        }
+                        negative = true;
+                    }
+
+                    else if (negative || !opers.Contains(s1[j]))      //          numbers
+                    {
+                        s += s1[j];
+                        negative = false;
+                        if (j != s1.Length - 1 && !opers.Contains(s1[j + 1]))
+                        {
+                            j++;
+                            while (j < s1.Length && !opers.Contains(s1[j]))
+                            {
+                                s += s1[j];
+                                j++;
+                            }
+                            j--;
+                        }
+                        output.Push(s);
+                        s = "";
+                    }
+                    //Console.WriteLine(fullStr[i]);
+                }
+                while (operatorStack.Count > 0)
+                {
+                    output.Push(Convert.ToString(operatorStack.Pop()));
+                }
+                while (output.Count > 0)
+                {
+                    Console.Write(output.Pop() + " ");
+                }
+                Console.WriteLine();
+
             }
-
             /*for (int i = 0; i < fullStr[j].Length; i++)
             {
                 if (fullStr[j][i] == '(')  //   (

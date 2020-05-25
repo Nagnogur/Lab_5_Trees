@@ -9,7 +9,7 @@ namespace Lab_5
     class OperationNode : Node
     {
         string value;
-        string[] opers = { "+", "-", "*", "/", "^" };
+        string[] opers = { "+", "-", "*", "/", "^", "=" };
         public string Value
         {
             get { return value; }
@@ -39,7 +39,7 @@ namespace Lab_5
         public OperationNode BuildSubTree(string[] expr)
         {
             Stack<OperationNode> st = new Stack<OperationNode>();
-            for (int i = 0; i < expr.Length; i++)
+            for (int i = expr.Length - 1; i >= 0; i--)
             {
                 if (!opers.Contains(expr[i]))
                 {
