@@ -7,8 +7,10 @@ using System.Threading.Tasks;
 
 namespace Lab_5
 {
+
     class Program
     {
+        
         // 3 +4 *2/( 1- 5)^ 2^3
         // if(...){...}
         static void Main(string[] args)
@@ -204,10 +206,10 @@ namespace Lab_5
                 List<string> state = new List<string>();
                 while (output.Count > 0)
                 {
-                    state.Add(output.Peek());
-                    Console.Write(output.Pop() + " ");
+                    state.Add(output.Pop());
+                   // Console.Write(output.Pop() + " ");
                 }
-                Console.WriteLine();
+                //Console.WriteLine();
                 if (ifState)
                 {
                     OperationNode op = new OperationNode().BuildSubTree(state.ToArray());
@@ -240,16 +242,8 @@ namespace Lab_5
             }
 
             Dictionary<string, double> table = new Dictionary<string, double>();
-            table.Add("a", 14.4);
-            table.Add("b", 4);
-            table.Add("c", 543);
-            OperationNode op1 = (OperationNode)expression.child[3];
-            string[] ssss = op1.CalcSubTree(table);
-            Console.WriteLine("\n\n");
-            foreach (string to in ssss)
-            {
-                Console.Write(to + "  ");
-            }
+            expression.CalculateTree(table);
+            
            /* for (int i = 0; i < expression.child.Count; i++)
             {
                 string type = expression.child[i].Type;
@@ -278,8 +272,8 @@ namespace Lab_5
                 }
             }*/
 
-            foreach (var entry in table)
-                Console.WriteLine("[{0} {1}]", entry.Key, entry.Value);
+            /*foreach (var entry in table)
+                Console.WriteLine("[{0} {1}]", entry.Key, entry.Value);*/
 
             /*for (int i = 0; i < fullStr[j].Length; i++)
             {
@@ -425,38 +419,7 @@ namespace Lab_5
             Console.ReadKey();
         }
 
-        public static void CalcExpression(Stack<string> stack1, char action)
-        {
-            int u = Convert.ToInt32(stack1.Peek());
-            stack1.Pop();
-            int v = Convert.ToInt32(stack1.Peek());
-            stack1.Pop();
-            int ans = 0;
-
-            if (action == '+')
-            {
-                ans = v + u;
-            }
-            else if (action == '-')
-            {
-                ans = v - u;
-            }
-            else if (action == '*')
-            {
-                ans = v * u;
-            }
-            else if (action == '/')
-            {
-                ans = v / u;
-            }
-            else if (action == '^')
-            {
-                ans = (int)Math.Pow(v, u);
-            }
-            stack1.Push(Convert.ToString(ans));
-
-            Console.ReadKey();
-        }
+        
 
         public static void PrintValues(Stack<string> stack, string[] p)
         {

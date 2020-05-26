@@ -19,6 +19,7 @@ namespace Lab_5
             child.Add(node);
         }
 
+       
         public void CalculateTree(Dictionary<string, double> table)
         {
             for (int i = 0; i < this.child.Count; i++)
@@ -42,8 +43,17 @@ namespace Lab_5
                     case "Operation":
                         {
                             OperationNode t = (OperationNode)this.child[i];
-                            t.WriteSubTree(t);
-                            Console.WriteLine();
+                            Console.WriteLine("result = " + t.Calc(table));
+                            //Console.WriteLine();
+                            break;
+                        }
+                    case "Condition":
+                        {
+                            IfNode ifNode = (IfNode)this.child[i];
+                            if (ifNode.condition.Condition(table))
+                            {
+                                ifNode.expression.CalculateTree(table);
+                            }
                             break;
                         }
                 }
