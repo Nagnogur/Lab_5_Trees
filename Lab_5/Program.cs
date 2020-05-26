@@ -93,6 +93,8 @@ namespace Lab_5
                         }*/
 
             ExpressionNode expression = new ExpressionNode();
+            ExpressionNode ifExpr = new ExpressionNode();
+            IfNode ifNode = new IfNode();
 
             bool ifState = false;
             bool statement = false;
@@ -108,8 +110,13 @@ namespace Lab_5
                 }
                 if (fullStr[i][0] == '}')
                 {
-                    s1 = "";
+                    ifNode.expression = ifExpr;
+                    expression.AddNode(ifNode);
+                    
                     statement = false;
+                    ifNode = null;
+                    ifExpr = null;
+                    continue;
                 }
                 else if (fullStr[i][0] == '{')
                 {
@@ -203,18 +210,28 @@ namespace Lab_5
                 Console.WriteLine();
                 if (ifState)
                 {
-
+                    OperationNode op = new OperationNode().BuildSubTree(state.ToArray());
+                    ifNode.condition = op;
                 }
                 else if (statement)
                 {
-
+                    if (equation)
+                    {
+                        EquationNode eq = new EquationNode(new VariableNode(state[2]), new ValueNode(Convert.ToDouble(state[1])));
+                        ifExpr.AddNode(eq);
+                    }
+                    else
+                    {
+                        OperationNode op = new OperationNode().BuildSubTree(state.ToArray());
+                        ifExpr.AddNode(op);
+                    }
                 }
                 else if (equation)
                 {
                     EquationNode eq = new EquationNode(new VariableNode(state[2]), new ValueNode(Convert.ToDouble(state[1])));
                     expression.AddNode(eq);
                 }
-                else
+                else if (state != null)
                 {
                     OperationNode op = new OperationNode("").BuildSubTree(state.ToArray());
                     expression.AddNode(op);
@@ -223,8 +240,17 @@ namespace Lab_5
             }
 
             Dictionary<string, double> table = new Dictionary<string, double>();
-
-            for (int i = 0; i < expression.child.Count; i++)
+            table.Add("a", 14.4);
+            table.Add("b", 4);
+            table.Add("c", 543);
+            OperationNode op1 = (OperationNode)expression.child[3];
+            string[] ssss = op1.CalcSubTree(table);
+            Console.WriteLine("\n\n");
+            foreach (string to in ssss)
+            {
+                Console.Write(to + "  ");
+            }
+           /* for (int i = 0; i < expression.child.Count; i++)
             {
                 string type = expression.child[i].Type;
                 switch(type)
@@ -250,7 +276,7 @@ namespace Lab_5
                             break;
                         }
                 }
-            }
+            }*/
 
             foreach (var entry in table)
                 Console.WriteLine("[{0} {1}]", entry.Key, entry.Value);

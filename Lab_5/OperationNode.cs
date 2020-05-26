@@ -9,7 +9,7 @@ namespace Lab_5
     class OperationNode : Node
     {
         string value;
-        string[] opers = { "+", "-", "*", "/", "^", "=" };
+        string[] opers = { "+", "-", "*", "/", "^", "=", ">", "<" };
         public string Value
         {
             get { return value; }
@@ -17,6 +17,14 @@ namespace Lab_5
         }
         public OperationNode left = null;
         public OperationNode right = null;
+
+        public OperationNode()
+        {
+            Type = "Operation";
+            //value = s;
+            // left = l;
+            //right = r;
+        }
 
         public OperationNode(string s)//, OperationNode l, OperationNode r)
         {
@@ -54,6 +62,32 @@ namespace Lab_5
                 }
             }
             return st.Pop();
+        }
+
+        public string[] CalcSubTree(Dictionary<string, double> table)
+        {
+            List<string> s = new List<string>();
+            if (this.left != null)
+            {
+                s.AddRange(this.left.CalcSubTree(table));
+            }
+            double d;
+            if (table.TryGetValue(this.Value, out d))
+            {
+                Console.Write(d + " ");
+                s.Add(d.ToString());
+            }
+            else
+            {
+                Console.Write(Value + " ");
+                s.Add(Value.ToString());
+            }
+                    
+            if (this.right != null)
+            {
+                s.AddRange(this.right.CalcSubTree(table));
+            }
+            return s.ToArray();
         }
     }
 }
